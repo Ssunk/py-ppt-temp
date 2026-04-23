@@ -1,0 +1,13 @@
+OrderID,CustomerName,Phone,ProductName,Quantity,UnitPrice,TotalAmount,OrderDate,PaymentMethod,ShippingAddress,OrderStatus
+ORD2024001,John Smith,13812345678,Mechanical Keyboard K1,1,399,399,2024-01-05 09:23,WeChat,88 Zhongguancun Street Haidian Beijing,Completed
+ORD2024002,Alice Chen,13923456789,Wireless Mouse M200,2,129,258,2024-01-06 14:15,Alipay,88 Lujiazui Road Pudong Shanghai,Completed
+ORD2024003,Bob Wang,13734567890,27-inch Monitor,1,1899,1899,2024-01-08 10:40,Credit Card,50 Tiyu West Road Tianhe Guangzhou,Shipped
+ORD2024004,Carol Lee,13645678901,Noise-Cancelling Headphones N50,3,699,2097,2024-01-10 16:55,WeChat,8 Keji Park Road Nanshan Shenzhen,Completed
+ORD2024005,David Liu,13556789012,Portable HDD 2TB,1,459,459,2024-01-12 08:30,Alipay,200 Wensan Road Xihu Hangzhou,Shipped
+ORD2024006,Eva Zhang,13467890123,Bluetooth Speaker S30,2,349,698,2024-01-15 11:20,WeChat,99 Tianfu Avenue Wuhou Chengdu,Completed
+ORD2024007,Frank Zhao,13378901234,Ergonomic Chair,1,1599,1599,2024-01-18 15:05,Credit Card,100 Zhongshan Road Gulou Nanjing,Pending
+ORD2024008,Grace Wu,13289012345,USB-C Hub Dongle,4,259,1036,2024-01-20 09:50,Alipay,60 Optics Valley Road Hongshan Wuhan,Completed
+ORD2024009,Henry Sun,13190123456,SSD 1TB,2,549,1098,2024-01-22 13:35,WeChat,30 Gaoxin Road Yanta Xian,Cancelled
+ORD2004010,Ivy Feng,13001234567,Mini Projector,1,2599,2599,2024-01-25 17:10,Credit Card,15 Jiefangbei Road Yuzhong Chongqing,Completed
+ORD2004011,Jack Chen,13911112222,Gamepad G1,5,299,1495,2024-02-01 10:00,WeChat,66 Anshan West Road Nankai Tianjin,Shipped
+ORD2004012,Karen Zhu,13822223333,Smart Plug,10,69,690,2024-02-03 14:30,Alipay,28 Guanqian Street Gusu Suzhou,Completed

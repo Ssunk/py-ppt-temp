@@ -1,0 +1,16 @@
+EmployeeID,FirstName,LastName,Department,Position,HireDate,BaseSalary,PerformanceBonus,SocialInsurance,HousingFund,NetSalary
+E001,James,Wilson,Engineering,Senior Engineer,2018-03-15,18000,5000,2100,1800,19100
+E002,Emily,Johnson,Marketing,Marketing Manager,2019-06-20,15000,4500,1800,1500,16200
+E003,Robert,Williams,Finance,Finance Supervisor,2017-01-10,16000,4000,1900,1600,16500
+E004,Sarah,Brown,Engineering,Frontend Developer,2020-09-01,14000,3500,1700,1400,14400
+E005,Michael,Davis,HR,Recruiter,2021-04-12,10000,2000,1200,1000,9800
+E006,Jessica,Garcia,Engineering,Backend Developer,2019-11-25,15500,3800,1850,1550,15900
+E007,David,Miller,Operations,Operations Director,2016-08-08,22000,6000,2500,2200,23300
+E008,Ashley,Martinez,Marketing,Brand Strategist,2022-02-14,12000,2500,1400,1200,11900
+E009,Christopher,Anderson,Engineering,QA Engineer,2020-07-30,13000,3000,1600,1300,13100
+E010,Amanda,Taylor,Finance,Accountant,2018-12-05,11000,2200,1300,1100,10800
+E011,Daniel,Thomas,Engineering,Architect,2015-05-20,25000,8000,2800,2500,27700
+E012,Stephanie,Jackson,HR,Training Supervisor,2019-03-18,13000,2800,1600,1300,12900
+E013,Andrew,White,Marketing,Sales Representative,2021-08-22,9000,5000,1100,900,12000
+E014,Nicole,Harris,Operations,Content Editor,2022-11-03,9500,1800,1100,950,9250
+E015,Matthew,Clark,Engineering,DevOps Engineer,2017-09-14,14500,3200,1750,1450,14500
