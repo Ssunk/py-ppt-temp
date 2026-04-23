@@ -214,7 +214,7 @@ def build_section(prs, template_slide, title, rows, cols):
 
 
 def build_table(prs, template_slide, headers, data_chunk,
-                page_num, total_pages, section_title):
+                page_num, total_pages, section_title, row_height, max_table_height):
     num_cols = len(headers)
     num_rows = len(data_chunk) + 1
 
@@ -229,10 +229,9 @@ def build_table(prs, template_slide, headers, data_chunk,
     if sh:
         _set_text(sh, f"Page {page_num} / {total_pages}", align=PP_ALIGN.RIGHT)
 
-    # table height: top at 0.85", bottom at 7.2" → max ~6.35"
+    # calculate actual height: row_height * num_rows, capped at max
     TABLE_TOP = Inches(0.85)
-    TABLE_BOTTOM = Inches(7.2)
-    table_height = TABLE_BOTTOM - TABLE_TOP
+    table_height = min(row_height * num_rows, max_table_height)
 
     # add data table
     tbl_shape = slide.shapes.add_table(
@@ -262,19 +261,23 @@ def build_table(prs, template_slide, headers, data_chunk,
 
 
 # ── main ───────────────────────────────────────────────
-def _read_rows_per_page(template_slide):
-    """Read the data rows count from the sample table in DATA_TABLE template slide.
-    Returns (total_rows - 1) as the number of data rows per page.
+def _read_table_config(template_slide):
+    """Read table config from the sample table in DATA_TABLE template slide.
+    Returns (data_rows_per_page, single_row_height, max_table_height).
     """
     for sp in template_slide.shapes:
         if sp.name == "SampleTable" and sp.has_table:
             total_rows = len(sp.table.rows)
             data_rows = total_rows - 1  # exclude header row
-            print(f"  SampleTable detected: {total_rows} rows total -> {data_rows} data rows per page")
-            return data_rows
+            table_height = sp.height   # EMU
+            row_height = table_height // total_rows
+            print(f"  SampleTable detected: {total_rows} rows, height={table_height} EMU")
+            print(f"  -> {data_rows} data rows/page, {row_height} EMU/row")
+            return data_rows, row_height, table_height
     # fallback
-    print("  Warning: SampleTable not found in template, defaulting to 5 rows per page")
-    return 5
+    print("  Warning: SampleTable not found, defaulting to 5 rows/page")
+    default_h = Inches(6.35)
+    return 5, default_h // 6, default_h
 
 
 def main():
@@ -285,8 +288,8 @@ def main():
     tmpl_section = prs.slides[1]
     tmpl_table   = prs.slides[2]
 
-    # read rows-per-page from template's sample table
-    rows_per_page = _read_rows_per_page(tmpl_table)
+    # read table config from template's sample table
+    rows_per_page, row_height, max_table_height = _read_table_config(tmpl_table)
 
     # ── build cover ───────────────────────────────────
     build_cover(prs, tmpl_cover)
@@ -304,7 +307,7 @@ def main():
             start = page * rows_per_page
             end = min(start + rows_per_page, total_rows)
             build_table(prs, tmpl_table, headers, data[start:end],
-                        page + 1, total_pages, title)
+                        page + 1, total_pages, title, row_height, max_table_height)
 
     # ── remove the 3 original template slides ─────────
     # delete in reverse order to keep indices stable
