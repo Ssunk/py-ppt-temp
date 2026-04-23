@@ -79,16 +79,62 @@ def _set_text(shape, text, size=None, bold=None, color=None, align=None):
         r.font.name = "Calibri"
 
 
-def _set_cell(cell, text, font_size=9, bold=False, color=DARK_GRAY, align=PP_ALIGN.LEFT):
+def _read_cell_style(cell):
+    """从模板表格单元格中提取字体样式。"""
+    style = {}
+    try:
+        tf = cell.text_frame
+        if tf.paragraphs and tf.paragraphs[0].runs:
+            font = tf.paragraphs[0].runs[0].font
+            if font.size is not None:
+                style['font_size'] = font.size
+            if font.name is not None:
+                style['font_name'] = font.name
+            if font.color and font.color.type is not None:
+                style['font_color'] = font.color.rgb
+            if font.bold is not None:
+                style['bold'] = font.bold
+    except Exception:
+        pass
+    try:
+        p = cell.text_frame.paragraphs[0]
+        if p.alignment is not None:
+            style['align'] = p.alignment
+    except Exception:
+        pass
+    return style
+
+
+def _get_cell_fill_rgb(cell):
+    """从单元格 XML 读取纯色填充色，返回 RGBColor 或 None。"""
+    tcPr = cell._tc.find(qn('a:tcPr'))
+    if tcPr is None:
+        return None
+    solidFill = tcPr.find(qn('a:solidFill'))
+    if solidFill is None:
+        return None
+    srgbClr = solidFill.find(qn('a:srgbClr'))
+    if srgbClr is not None and srgbClr.get('val'):
+        return RGBColor.from_string(srgbClr.get('val'))
+    return None
+
+
+def _set_cell(cell, text, style=None):
+    """写入单元格文本并应用模板样式，缺少的属性用硬编码默认值补齐。"""
+    style = style or {}
     cell.text = ""
     p = cell.text_frame.paragraphs[0]
-    p.alignment = align
+    if 'align' in style and style['align'] is not None:
+        p.alignment = style['align']
     r = p.add_run()
     r.text = str(text)
-    r.font.size = Pt(font_size)
-    r.font.bold = bold
-    r.font.color.rgb = color
-    r.font.name = "Calibri"
+    if style.get('font_size'):
+        r.font.size = style['font_size']
+    if style.get('bold') is not None:
+        r.font.bold = style['bold']
+    if style.get('font_color'):
+        r.font.color.rgb = style['font_color']
+    r.font.name = style.get('font_name') or "Calibri"
     cell.vertical_anchor = 1  # middle
 
 
@@ -214,7 +260,8 @@ def build_section(prs, template_slide, title, rows, cols):
 
 
 def build_table(prs, template_slide, headers, data_chunk,
-                page_num, total_pages, section_title, row_height, max_table_height):
+                page_num, total_pages, section_title, row_height, max_table_height,
+                header_style=None, data_style=None, header_fill=None, alt_fill=None):
     num_cols = len(headers)
     num_rows = len(data_chunk) + 1
 
@@ -247,37 +294,65 @@ def build_table(prs, template_slide, headers, data_chunk,
     # header
     for ci, h in enumerate(headers):
         c = tbl.cell(0, ci)
-        _set_cell(c, h, font_size=10, bold=True,
-                  color=TABLE_HEADER_FG, align=PP_ALIGN.CENTER)
-        _fill_cell(c, TABLE_HEADER_BG)
+        _set_cell(c, h, style=header_style)
+        if header_fill:
+            _fill_cell(c, header_fill)
 
     # data
     for ri, row in enumerate(data_chunk):
         for ci, val in enumerate(row):
             c = tbl.cell(ri + 1, ci)
-            _set_cell(c, val, font_size=9)
-            if ri % 2 == 1:
-                _fill_cell(c, TABLE_ROW_ALT)
+            _set_cell(c, val, style=data_style)
+            if ri % 2 == 1 and alt_fill:
+                _fill_cell(c, alt_fill)
 
 
 # ── main ───────────────────────────────────────────────
 def _read_table_config(template_slide):
-    """Read table config from the sample table in DATA_TABLE template slide.
-    Returns (data_rows_per_page, single_row_height, max_table_height).
+    """Read table config + cell styles from the sample table in DATA_TABLE template slide.
+    Returns (data_rows_per_page, single_row_height, max_table_height,
+             header_style, data_style, header_fill, alt_fill).
     """
     for sp in template_slide.shapes:
         if sp.name == "SampleTable" and sp.has_table:
             total_rows = len(sp.table.rows)
-            data_rows = total_rows - 1  # exclude header row
-            table_height = sp.height   # EMU
+            data_rows = total_rows - 1
+            table_height = sp.height
             row_height = table_height // total_rows
-            print(f"  SampleTable detected: {total_rows} rows, height={table_height} EMU")
+
+            header_style = _read_cell_style(sp.table.cell(0, 0))
+            header_fill = _get_cell_fill_rgb(sp.table.cell(0, 0))
+            data_style = _read_cell_style(sp.table.cell(1, 0))
+            alt_fill = None
+            if total_rows > 2:
+                alt_fill = _get_cell_fill_rgb(sp.table.cell(2, 0))
+
+            # 模板未显式设置的属性用代码默认值补齐
+            _DH = {'font_size': Pt(10), 'font_name': 'Calibri',
+                   'font_color': TABLE_HEADER_FG, 'bold': True, 'align': PP_ALIGN.CENTER}
+            _DD = {'font_size': Pt(9), 'font_name': 'Calibri',
+                   'font_color': DARK_GRAY, 'bold': False, 'align': PP_ALIGN.LEFT}
+            for k, v in _DH.items():
+                header_style.setdefault(k, v)
+            for k, v in _DD.items():
+                data_style.setdefault(k, v)
+            header_fill = header_fill or TABLE_HEADER_BG
+            alt_fill = alt_fill or TABLE_ROW_ALT
+
+            print(f"  SampleTable: {total_rows} rows, height={table_height} EMU")
             print(f"  -> {data_rows} data rows/page, {row_height} EMU/row")
-            return data_rows, row_height, table_height
+            print(f"  header style: {header_style}, fill: {header_fill}")
+            print(f"  data style: {data_style}, alt fill: {alt_fill}")
+            return data_rows, row_height, table_height, header_style, data_style, header_fill, alt_fill
+
     # fallback
     print("  Warning: SampleTable not found, defaulting to 5 rows/page")
     default_h = Inches(6.35)
-    return 5, default_h // 6, default_h
+    hs = {'font_size': Pt(10), 'font_name': 'Calibri', 'font_color': TABLE_HEADER_FG,
+          'bold': True, 'align': PP_ALIGN.CENTER}
+    ds = {'font_size': Pt(9), 'font_name': 'Calibri', 'font_color': DARK_GRAY,
+          'bold': False, 'align': PP_ALIGN.LEFT}
+    return 5, default_h // 6, default_h, hs, ds, TABLE_HEADER_BG, TABLE_ROW_ALT
 
 
 def main():
@@ -289,7 +364,8 @@ def main():
     tmpl_table   = prs.slides[2]
 
     # read table config from template's sample table
-    rows_per_page, row_height, max_table_height = _read_table_config(tmpl_table)
+    rows_per_page, row_height, max_table_height, \
+        header_style, data_style, header_fill, alt_fill = _read_table_config(tmpl_table)
 
     # ── build cover ───────────────────────────────────
     build_cover(prs, tmpl_cover)
@@ -307,7 +383,8 @@ def main():
             start = page * rows_per_page
             end = min(start + rows_per_page, total_rows)
             build_table(prs, tmpl_table, headers, data[start:end],
-                        page + 1, total_pages, title, row_height, max_table_height)
+                        page + 1, total_pages, title, row_height, max_table_height,
+                        header_style, data_style, header_fill, alt_fill)
 
     # ── remove the 3 original template slides ─────────
     # delete in reverse order to keep indices stable
