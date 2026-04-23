@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(D:/workspace/venv/Scripts/python.exe:*)"
+    ]
+  }
+}
