@@ -306,6 +306,8 @@ def build_table(prs, template_slide, headers, data_chunk,
             if ri % 2 == 1 and alt_fill:
                 _fill_cell(c, alt_fill)
 
+    return tbl_shape
+
 
 # ── main ───────────────────────────────────────────────
 def _read_table_config(template_slide):
@@ -355,6 +357,41 @@ def _read_table_config(template_slide):
     return 5, default_h // 6, default_h, hs, ds, TABLE_HEADER_BG, TABLE_ROW_ALT
 
 
+def compare_order_prices(filepath1, filepath2):
+    """对比两个订单CSV的单价，返回 |差价| > 5 的产品列表及带符号差价。
+    Returns (headers, data, diffs)。
+    """
+    headers1, data1 = read_csv(filepath1)
+    headers2, data2 = read_csv(filepath2)
+
+    try:
+        name_idx1 = headers1.index("ProductName")
+        price_idx1 = headers1.index("UnitPrice")
+        name_idx2 = headers2.index("ProductName")
+        price_idx2 = headers2.index("UnitPrice")
+    except ValueError:
+        return None, None, None
+
+    price_map1 = {row[name_idx1]: float(row[price_idx1]) for row in data1}
+    price_map2 = {row[name_idx2]: float(row[price_idx2]) for row in data2}
+
+    common = sorted(set(price_map1.keys()) & set(price_map2.keys()))
+
+    result_headers = ["ProductName", "Month1 Price (¥)", "Month2 Price (¥)", "Difference (¥)"]
+    result_data = []
+    diffs = []
+    for prod in common:
+        p1 = price_map1[prod]
+        p2 = price_map2[prod]
+        diff = p2 - p1
+        if abs(diff) > 5:
+            prefix = "+" if diff > 0 else ""
+            result_data.append([prod, f"{p1:.0f}", f"{p2:.0f}", f"{prefix}{diff:.0f}"])
+            diffs.append(diff)
+
+    return result_headers, result_data, diffs
+
+
 def main():
     prs = Presentation(TEMPLATE)
 
@@ -385,6 +422,39 @@ def main():
             build_table(prs, tmpl_table, headers, data[start:end],
                         page + 1, total_pages, title, row_height, max_table_height,
                         header_style, data_style, header_fill, alt_fill)
+
+    # ── price comparison: orders vs orders2 ───────────
+    order1_path = os.path.join(SCRIPT_DIR, "orders.csv")
+    order2_path = os.path.join(SCRIPT_DIR, "orders2.csv")
+    comp_headers, comp_data, comp_diffs = compare_order_prices(order1_path, order2_path)
+
+    if comp_headers and comp_data:
+        section_title = "Monthly Price Comparison (|diff| > 5)"
+        build_section(prs, tmpl_section, section_title, len(comp_data), len(comp_headers))
+
+        total_pages = (len(comp_data) + rows_per_page - 1) // rows_per_page
+        for page in range(total_pages):
+            start = page * rows_per_page
+            end = min(start + rows_per_page, len(comp_data))
+            tbl_shape = build_table(prs, tmpl_table, comp_headers, comp_data[start:end],
+                                     page + 1, total_pages, section_title, row_height, max_table_height,
+                                     header_style, data_style, header_fill, alt_fill)
+            # 对 Difference 列（第4列，索引3）按差价区间着色
+            tbl = tbl_shape.table
+            YELLOW = RGBColor(0xFF, 0xFF, 0x00)
+            RED = RGBColor(0xFF, 0x00, 0x00)
+            GREEN = RGBColor(0x00, 0x80, 0x00)
+            for ri, diff_val in enumerate(comp_diffs[start:end]):
+                cell = tbl.cell(ri + 1, 3)
+                if diff_val > 0:
+                    if diff_val >= 100:
+                        _fill_cell(cell, RED)
+                    else:
+                        _fill_cell(cell, YELLOW)
+                else:
+                    _fill_cell(cell, GREEN)
+    else:
+        print("No price differences >5 found between orders.csv and orders2.csv")
 
     # ── remove the 3 original template slides ─────────
     # delete in reverse order to keep indices stable

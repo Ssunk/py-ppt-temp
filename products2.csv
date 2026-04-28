@@ -1,0 +1,21 @@
+ProductID,ProductName,Category,Supplier,UnitPrice,StockQuantity,SoldQuantity,CostPrice,ProfitMargin,ListDate,Status,WarehouseLocation
+P001,Mechanical Keyboard K1,Peripherals,Shenzhen Precision Electronics,399,580,1200,220,0.45,2023-03-01,Active,A-01-03
+P002,Wireless Mouse M200,Peripherals,Dongguan Optoelectronics,129,1200,3500,65,0.50,2022-08-15,Active,A-01-05
+P003,27-inch Monitor,Monitors,Suzhou Vision Tech,1899,230,890,1050,0.45,2022-01-20,Active,B-03-01
+P004,USB-C Hub Dongle,Accessories,Guangzhou Connector Tech,259,890,2100,120,0.54,2023-06-10,Active,A-02-04
+P005,Noise-Cancelling Headphones N50,Audio,Huizhou Acoustics,699,450,1800,320,0.54,2022-11-05,Active,C-01-02
+P006,Portable HDD 2TB,Storage,Shanghai Storage Star,459,670,1500,280,0.39,2023-01-18,Active,D-02-01
+P007,HD Webcam,Peripherals,Hangzhou VisionLink,199,1100,2800,85,0.57,2022-05-22,Active,A-02-06
+P008,Bluetooth Speaker S30,Audio,Foshan SoundJoy,349,520,1600,160,0.54,2023-04-08,Active,C-02-03
+P009,Ergonomic Chair,Furniture,Ningbo ComfortSeat,1599,180,620,880,0.45,2022-09-12,Active,E-01-01
+P010,Laptop Stand,Accessories,Yiwu ProHardware,89,2300,5600,35,0.61,2023-02-25,Active,A-03-02
+P011,4K HDMI Cable 2m,Cables,Dongguan Xinda Electronics,39,5000,12000,12,0.69,2021-12-01,Active,F-01-01
+P012,Desk Lamp L100,Lighting,Zhongshan BrightView,169,780,2400,72,0.57,2023-07-15,Active,G-01-03
+P013,Mini Projector,Projectors,Shenzhen ShadowTech,2599,120,380,1800,0.31,2023-09-20,Promo,B-02-01
+P014,Gamepad G1,Gaming,Guangzhou JoyPlay,299,650,1900,135,0.55,2022-07-08,Active,A-04-01
+P015,SSD 1TB,Storage,Shanghai Storage Star,549,480,2200,310,0.43,2023-05-30,Active,D-01-02
+P016,Laptop Sleeve,Accessories,Yiwu ProHardware,49,3200,8500,18,0.63,2022-03-14,Active,F-02-01
+P017,Wireless Charger Pad,Accessories,Shenzhen Precision Electronics,79,1500,4200,28,0.65,2023-08-01,Active,A-02-08
+P018,Monitor Arm Mount,Accessories,Ningbo ComfortSeat,199,420,1300,95,0.52,2022-10-18,Active,B-04-02
+P019,Earbuds E20,Audio,Huizhou Acoustics,149,980,3100,55,0.63,2023-01-05,Active,C-01-05
+P020,Smart Plug,Smart Home,Hangzhou SmartLink,69,1800,5500,25,0.64,2022-06-20,Active,G-02-01
