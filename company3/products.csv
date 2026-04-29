@@ -1,0 +1,21 @@
+ProductID,ProductName,Category,Supplier,UnitPrice,StockQuantity,SoldQuantity,CostPrice,ProfitMargin,ListDate,Status,WarehouseLocation
+P001,Mechanical Keyboard K1,Peripherals,Shenzhen Precision Electronics,225,4141,9177,220,0.02,2023-04-22,Promo,A-03-01
+P002,Wireless Mouse M200,Peripherals,Hangzhou VisionLink,70,1174,1863,65,0.07,2023-09-23,Active,A-01-06
+P003,27-inch Monitor,Monitors,Suzhou Vision Tech,1205,1533,5033,1050,0.13,2023-08-08,Promo,B-04-01
+P004,USB-C Hub Dongle,Accessories,Guangzhou Connector Tech,135,683,13796,120,0.11,2023-05-07,Active,A-02-05
+P005,Noise-Cancelling Headphones N50,Audio,Huizhou Acoustics,370,5179,5484,320,0.14,2022-02-12,Active,C-04-01
+P006,Portable HDD 2TB,Storage,Shenzhen MemTech,285,2451,12610,280,0.02,2023-02-22,Active,D-01-03
+P007,HD Webcam,Peripherals,Shenzhen Precision Electronics,90,4756,5346,85,0.06,2022-05-17,Active,A-03-06
+P008,Bluetooth Speaker S30,Audio,Huizhou Acoustics,185,1377,14476,160,0.14,2023-07-08,Active,C-04-01
+P009,Ergonomic Chair,Furniture,Guangzhou ErgoPlus,930,1894,960,880,0.05,2023-05-09,Promo,E-03-01
+P010,Laptop Stand,Accessories,Yiwu ProHardware,40,3409,11887,35,0.12,2022-06-10,Active,A-03-03
+P011,4K HDMI Cable 2m,Cables,Dongguan Xinda Electronics,17,1445,7471,12,0.29,2022-04-13,Promo,F-01-06
+P012,Desk Lamp L100,Lighting,Foshan Illumination,77,326,9535,72,0.06,2023-09-08,Promo,G-03-04
+P013,Mini Projector,Projectors,Guangzhou OptiView,1805,2899,8934,1800,0.0,2022-08-12,Promo,B-04-01
+P014,Gamepad G1,Gaming,Shenzhen GamePower,140,852,9042,135,0.04,2023-05-20,Active,A-01-02
+P015,SSD 1TB,Storage,Shanghai Storage Star,315,3852,14688,310,0.02,2023-07-11,Active,D-03-01
+P016,Laptop Sleeve,Accessories,Ningbo ComfortSeat,23,2691,2541,18,0.22,2023-03-25,Active,A-03-01
+P017,Wireless Charger Pad,Accessories,Shenzhen Precision Electronics,33,2671,4693,28,0.15,2022-01-24,Active,A-04-01
+P018,Monitor Arm Mount,Accessories,Yiwu ProHardware,100,3710,14750,95,0.05,2022-05-16,Active,A-02-01
+P019,Earbuds E20,Audio,Huizhou Acoustics,60,5163,9594,55,0.08,2022-07-22,Active,C-03-06
+P020,Smart Plug,Smart Home,Beijing IoT Solutions,30,4328,8237,25,0.17,2023-01-10,Active,G-03-05

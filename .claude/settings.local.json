@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(D:/workspace/venv/Scripts/python.exe:*)",
-      "Bash(D:\\\\workspace\\\\venv\\\\Scripts\\\\python.exe *)"
+      "Bash(D:\\\\workspace\\\\venv\\\\Scripts\\\\python.exe *)",
+      "Bash(\"D:\\\\workspace\\\\venv\\\\Scripts\\\\python.exe\" \"D:\\\\workspace\\\\py-ppt-temp\\\\generate_company_data.py\")",
+      "Bash('D:\\\\workspace\\\\venv\\\\Scripts\\\\python.exe' -c ' *)",
+      "Bash(/d/workspace/venv/Scripts/python.exe d:/workspace/py-ppt-temp/generate_ppt.py)",
+      "Bash(/d/workspace/venv/Scripts/python.exe -c ' *)"
     ]
   }
 }

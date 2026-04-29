@@ -1,0 +1,13 @@
+OrderID,CustomerName,Phone,ProductName,Quantity,UnitPrice,TotalAmount,OrderDate,PaymentMethod,ShippingAddress,OrderStatus
+ORD2024001,Dylan Larson,13095701543,Mechanical Keyboard K1,3,225,675,2024-01-07 10:41,Credit Card,103 Golden Boulevard Yuzhong Chongqing,Cancelled
+ORD2024002,Penelope Fisher,13885685574,Wireless Mouse M200,1,70,70,2024-01-19 12:59,Alipay,82 Phoenix Road Heping Tianjin,Cancelled
+ORD2024003,Layla Tucker,13084124118,27-inch Monitor,1,1070,1070,2024-01-14 9:28,WeChat,157 Golden Boulevard Wuchang Wuhan,Completed
+ORD2024004,Nathaniel Shaw,13366299468,USB-C Hub Dongle,2,125,250,2024-01-21 17:43,Alipay,134 Science Park Road Hongshan Wuhan,Completed
+ORD2024005,Isaac Butler,13350305641,Noise-Cancelling Headphones N50,4,325,1300,2024-01-12 10:59,WeChat,163 East Lake Road Liwan Guangzhou,Shipped
+ORD2024006,Julian Hamilton,13734714345,Portable HDD 2TB,10,300,3000,2024-01-04 15:57,WeChat,127 Dragon Street Weiyang Xian,Completed
+ORD2024007,Eleanor Warren,13161559407,HD Webcam,1,90,90,2024-01-12 11:37,WeChat,169 Crystal Street Hongshan Wuhan,Shipped
+ORD2024008,Stella Gibson,13143634957,Bluetooth Speaker S30,3,190,570,2024-01-27 13:52,Alipay,186 Golden Boulevard Haidian Beijing,Pending
+ORD2024009,Naomi Kennedy,13314737996,Ergonomic Chair,2,885,1770,2024-01-04 13:21,Alipay,155 West Ring Road Hongshan Wuhan,Completed
+ORD2004010,Carson Spencer,13676320163,Laptop Stand,1,40,40,2024-01-02 8:05,Credit Card,10 Golden Boulevard Beilin Xian,Completed
+ORD2004011,Violet Hansen,13679740344,4K HDMI Cable 2m,5,17,85,2024-01-23 14:26,Alipay,21 Phoenix Road Gaoxin Chengdu,Completed
+ORD2004012,Madelyn Carpenter,13947775204,Desk Lamp L100,1,77,77,2024-01-22 12:17,Credit Card,122 Moonlight Road Beilin Xian,Completed

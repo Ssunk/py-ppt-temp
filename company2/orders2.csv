@@ -1,0 +1,13 @@
+OrderID,CustomerName,Phone,ProductName,Quantity,UnitPrice,TotalAmount,OrderDate,PaymentMethod,ShippingAddress,OrderStatus
+ORD2024001,Chloe Ramirez,13586518506,Mechanical Keyboard K1,1,225,225,2024-02-12 10:44,WeChat,180 West Ring Road Hexi Tianjin,Completed
+ORD2024002,Aria Ward,13500978820,Wireless Mouse M200,5,150,750,2024-02-05 17:15,Credit Card,128 Phoenix Road Liwan Guangzhou,Shipped
+ORD2024003,Sofia Flores,13885685574,27-inch Monitor,4,1055,4220,2024-02-11 11:04,WeChat,129 Forest Lane Futian Shenzhen,Shipped
+ORD2024004,Hannah Bell,13354278498,USB-C Hub Dongle,1,125,125,2024-02-27 8:18,Alipay,76 Star Avenue Yanta Xian,Shipped
+ORD2024005,Tyler Moore,13484656482,Noise-Cancelling Headphones N50,2,355,710,2024-02-28 16:03,Alipay,118 Harbour Boulevard Gongshu Hangzhou,Completed
+ORD2024006,Riley Sullivan,13985435346,Portable HDD 2TB,1,386,386,2024-02-12 15:27,Credit Card,174 Crystal Street Hexi Tianjin,Completed
+ORD2024007,Logan Peterson,13500978820,HD Webcam,10,430,4300,2024-02-08 13:04,Alipay,94 Moonlight Road Hongshan Wuhan,Shipped
+ORD2024008,Carter Myers,13507527354,Bluetooth Speaker S30,3,175,525,2024-02-24 16:17,Credit Card,192 Moonlight Road Luohu Shenzhen,Completed
+ORD2024009,Caleb Cox,13939909169,Ergonomic Chair,1,885,885,2024-02-14 8:52,WeChat,140 Phoenix Road Dongcheng Beijing,Shipped
+ORD2004010,Mason Hughes,13169340608,Laptop Stand,5,40,200,2024-02-09 11:16,Alipay,34 Moonlight Road Xihu Hangzhou,Pending
+ORD2004011,Zoe Reed,13667010651,4K HDMI Cable 2m,2,17,34,2024-02-21 16:28,Credit Card,148 Technology Street Haizhu Guangzhou,Completed
+ORD2004012,Aiden Jenkins,13324210249,Desk Lamp L100,3,77,231,2024-02-19 12:51,WeChat,168 Science Park Road Beilin Xian,Completed

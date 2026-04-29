@@ -17,7 +17,7 @@ from pptx.oxml.ns import qn
 # ── 配置 ──────────────────────────────────────────────
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE = os.path.join(SCRIPT_DIR, "report_template.pptx")
-OUTPUT = os.path.join(SCRIPT_DIR, "report.pptx")
+COMPANY_DIRS = ["company1", "company2", "company3"]
 
 PRISM_BLUE = RGBColor(0x00, 0x70, 0xC0)
 DARK_GRAY = RGBColor(0x33, 0x33, 0x33)
@@ -392,7 +392,11 @@ def compare_order_prices(filepath1, filepath2):
     return result_headers, result_data, diffs
 
 
-def main():
+def generate_company_report(company_dir):
+    """为单个公司目录生成 report.pptx。"""
+    data_dir = os.path.join(SCRIPT_DIR, company_dir)
+    output_path = os.path.join(data_dir, "report.pptx")
+
     prs = Presentation(TEMPLATE)
 
     # grab the 3 template slides (will be deleted later)
@@ -409,7 +413,7 @@ def main():
 
     # ── build each CSV section ────────────────────────
     for filename, title, _ in csv_files:
-        filepath = os.path.join(SCRIPT_DIR, filename)
+        filepath = os.path.join(data_dir, filename)
         headers, data = read_csv(filepath)
         total_rows = len(data)
         total_pages = (total_rows + rows_per_page - 1) // rows_per_page
@@ -424,8 +428,8 @@ def main():
                         header_style, data_style, header_fill, alt_fill)
 
     # ── price comparison: orders vs orders2 ───────────
-    order1_path = os.path.join(SCRIPT_DIR, "orders.csv")
-    order2_path = os.path.join(SCRIPT_DIR, "orders2.csv")
+    order1_path = os.path.join(data_dir, "orders.csv")
+    order2_path = os.path.join(data_dir, "orders2.csv")
     comp_headers, comp_data, comp_diffs = compare_order_prices(order1_path, order2_path)
 
     if comp_headers and comp_data:
@@ -454,7 +458,7 @@ def main():
                 else:
                     _fill_cell(cell, GREEN)
     else:
-        print("No price differences >5 found between orders.csv and orders2.csv")
+        print("  No price differences >5 found between orders.csv and orders2.csv")
 
     # ── remove the 3 original template slides ─────────
     # delete in reverse order to keep indices stable
@@ -463,9 +467,102 @@ def main():
         prs.part.drop_rel(rId)
         prs.slides._sldIdLst.remove(prs.slides._sldIdLst[idx])
 
-    prs.save(OUTPUT)
-    print(f"Done -> {OUTPUT}")
+    prs.save(output_path)
+    print(f"  Done -> {output_path}")
+    print(f"  Total slides: {len(prs.slides)}")
+
+
+def generate_summary_report():
+    """在根目录生成总结性 PPT，统计各公司价格差异的绝对值数量分布（每100为区间）。"""
+    output_path = os.path.join(SCRIPT_DIR, "summary_report.pptx")
+
+    prs = Presentation(TEMPLATE)
+    tmpl_cover = prs.slides[0]
+    tmpl_section = prs.slides[1]
+    tmpl_table = prs.slides[2]
+
+    _, row_height, max_table_height, \
+        header_style, data_style, header_fill, alt_fill = _read_table_config(tmpl_table)
+
+    # 收集各公司 diffs
+    company_diffs = {}
+    for company_dir in COMPANY_DIRS:
+        data_dir = os.path.join(SCRIPT_DIR, company_dir)
+        _, _, diffs = compare_order_prices(
+            os.path.join(data_dir, "orders.csv"),
+            os.path.join(data_dir, "orders2.csv"),
+        )
+        company_diffs[company_dir] = diffs or []
+
+    all_abs = [abs(d) for diffs in company_diffs.values() for d in diffs]
+    if not all_abs:
+        print("  No price differences found, skipping summary.")
+        return
+
+    # 动态计算区间：1-100, 101-200, 201-300, ...
+    max_val = int(max(all_abs))
+    max_ceiling = ((max_val - 1) // 100 + 1) * 100
+    ranges = [(i, min(i + 99, max_ceiling)) for i in range(1, max_ceiling + 1, 100)]
+
+    # 表头和数据
+    headers = ["Company"] + [f"{lo}-{hi}" for lo, hi in ranges]
+    table_data = []
+    for company_dir in COMPANY_DIRS:
+        diffs = company_diffs[company_dir]
+        row = [company_dir]
+        for lo, hi in ranges:
+            row.append(str(sum(1 for d in diffs if lo <= abs(d) <= hi)))
+        table_data.append(row)
+
+    # ── 封面 ─────────────────────────────────────
+    slide = _clone_slide(prs, tmpl_cover)
+    sh = _find_shape(slide, "Title")
+    if sh:
+        _set_text(sh, "Price Difference Summary")
+    sh = _find_shape(slide, "Subtitle")
+    if sh:
+        _set_text(sh, "Statistical overview across all companies")
+
+    # ── 分隔页 ───────────────────────────────────
+    build_section(prs, tmpl_section, "Price Difference Distribution", len(table_data), len(headers))
+
+    # ── 表格页 ───────────────────────────────────
+    tbl_shape = build_table(prs, tmpl_table, headers, table_data, 1, 1,
+                            "Price Difference Distribution", row_height, max_table_height,
+                            header_style, data_style, header_fill, alt_fill)
+
+    # 为公司名添加超链接，点击跳转到对应 report.pptx
+    tbl = tbl_shape.table
+    for ri, company_dir in enumerate(COMPANY_DIRS):
+        cell = tbl.cell(ri + 1, 0)
+        if cell.text_frame.paragraphs[0].runs:
+            run = cell.text_frame.paragraphs[0].runs[0]
+            run.hyperlink.address = f"{company_dir}/report.pptx#slide=12"
+            # 设置 action 属性，告知 PowerPoint 这是一个文件超链接
+            # 这样 PowerPoint 桌面版才会解析 #slide=12 跳转到指定页
+            hlinkClick = run._r.find('.//' + qn('a:hlinkClick'))
+            if hlinkClick is not None:
+                hlinkClick.set('action', 'ppaction://hlinkfile')
+
+    # 删除模板页
+    for idx in [2, 1, 0]:
+        rId = prs.slides._sldIdLst[idx].get(qn("r:id"))
+        prs.part.drop_rel(rId)
+        prs.slides._sldIdLst.remove(prs.slides._sldIdLst[idx])
+
+    prs.save(output_path)
+    print(f"\nDone -> {output_path}")
     print(f"Total slides: {len(prs.slides)}")
+
+
+def main():
+    for company_dir in COMPANY_DIRS:
+        print(f"\n=== {company_dir} ===")
+        generate_company_report(company_dir)
+
+    print("\n=== Summary ===")
+    generate_summary_report()
+    print("\nAll reports generated.")
 
 
 if __name__ == "__main__":

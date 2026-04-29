@@ -1,0 +1,13 @@
+OrderID,CustomerName,Phone,ProductName,Quantity,UnitPrice,TotalAmount,OrderDate,PaymentMethod,ShippingAddress,OrderStatus
+ORD2024001,Madelyn Carpenter,13244935348,Mechanical Keyboard K1,1,225,225,2024-02-24 10:39,WeChat,186 Star Avenue Gongshu Hangzhou,Cancelled
+ORD2024002,Isaac Butler,13928327648,Wireless Mouse M200,2,70,140,2024-02-20 12:23,WeChat,126 Moonlight Road Binjiang Hangzhou,Completed
+ORD2024003,Dominic Cole,13627048281,27-inch Monitor,1,975,975,2024-02-18 17:36,Alipay,127 West Ring Road Gusu Suzhou,Pending
+ORD2024004,Eleanor Warren,13310341316,USB-C Hub Dongle,5,62,310,2024-02-10 17:52,Credit Card,30 Science Park Road Haidian Beijing,Shipped
+ORD2024005,Penelope Fisher,13947775204,Noise-Cancelling Headphones N50,10,325,3250,2024-02-16 17:03,Credit Card,88 Star Avenue Xihu Hangzhou,Cancelled
+ORD2024006,Levi Gordon,13080531003,Portable HDD 2TB,3,300,900,2024-02-16 12:09,WeChat,56 Star Avenue Xiangcheng Suzhou,Completed
+ORD2024007,Violet Hansen,13669096705,HD Webcam,1,90,90,2024-02-25 17:02,WeChat,161 Phoenix Road Jingan Shanghai,Completed
+ORD2024008,Julian Hamilton,13337498941,Bluetooth Speaker S30,2,544,1088,2024-02-24 11:54,WeChat,183 Harbour Boulevard Shapingba Chongqing,Shipped
+ORD2024009,Dylan Larson,13309232719,Ergonomic Chair,2,885,1770,2024-02-12 11:17,Alipay,136 Moonlight Road Jianye Nanjing,Completed
+ORD2004010,Carson Spencer,13143634957,Laptop Stand,5,40,200,2024-02-26 11:43,WeChat,57 Phoenix Road Jiangbei Chongqing,Shipped
+ORD2004011,Gabriel West,13310341316,4K HDMI Cable 2m,3,17,51,2024-02-14 12:48,Alipay,39 Sunshine Avenue Dongcheng Beijing,Completed
+ORD2004012,Layla Tucker,13467065627,Desk Lamp L100,1,77,77,2024-02-12 14:17,Alipay,73 Phoenix Road Nanshan Shenzhen,Completed
