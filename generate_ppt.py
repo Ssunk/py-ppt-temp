@@ -8,6 +8,8 @@ generate_ppt.py
 import csv
 import os
 import copy
+import zipfile
+import lxml.etree as ET
 from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
@@ -37,6 +39,44 @@ csv_files = [
 
 
 # ── helpers ────────────────────────────────────────────
+def _get_price_comparison_slide_info(report_path):
+    """从已生成的 report.pptx 中获取 \"Monthly Price Comparison\" 数据页的
+    (1-based slide_number, sldId, slide_title)。
+
+    返回 (slide_number, sld_id, title) 或 (None, None, None)。
+    """
+    SECTION_TITLE_PREFIX = "Monthly Price Comparison"
+
+    prs = Presentation(report_path)
+
+    # 从 presentation.xml 中读取各幻灯片的内部 sldId
+    with zipfile.ZipFile(report_path, "r") as z:
+        pres_xml = z.read("ppt/presentation.xml")
+    pres_root = ET.fromstring(pres_xml)
+    sld_id_lst = pres_root.find(".//" + qn("p:sldIdLst"))
+    sld_ids = [int(e.get("id")) for e in sld_id_lst] if sld_id_lst is not None else []
+
+    # 查找第一个包含 PageInfo shape 的 "Monthly Price Comparison" 幻灯片（即数据页而非分隔页）
+    for idx, slide in enumerate(prs.slides):
+        has_section_title = False
+        has_page_info = False
+        title_text = ""
+        for sp in slide.shapes:
+            if sp.name == "SectionTitle" and hasattr(sp, "text"):
+                text = sp.text.strip()
+                if text.startswith(SECTION_TITLE_PREFIX):
+                    has_section_title = True
+                    title_text = text
+            if sp.name == "PageInfo":
+                has_page_info = True
+        if has_section_title and has_page_info:
+            slide_number = idx + 1
+            sld_id = sld_ids[idx] if idx < len(sld_ids) else 256 + idx
+            return slide_number, sld_id, title_text
+
+    return None, None, None
+
+
 def _find_shape(slide, name):
     """Return shape by name, or None."""
     for sp in slide.shapes:
@@ -531,18 +571,34 @@ def generate_summary_report():
                             "Price Difference Distribution", row_height, max_table_height,
                             header_style, data_style, header_fill, alt_fill)
 
-    # 为公司名添加超链接，点击跳转到对应 report.pptx
+    # 为公司名添加超链接，点击跳转到对应 report.pptx 的价格对比页
     tbl = tbl_shape.table
     for ri, company_dir in enumerate(COMPANY_DIRS):
         cell = tbl.cell(ri + 1, 0)
-        if cell.text_frame.paragraphs[0].runs:
-            run = cell.text_frame.paragraphs[0].runs[0]
-            run.hyperlink.address = f"{company_dir}/report.pptx#slide=12"
-            # 设置 action 属性，告知 PowerPoint 这是一个文件超链接
-            # 这样 PowerPoint 桌面版才会解析 #slide=12 跳转到指定页
-            hlinkClick = run._r.find('.//' + qn('a:hlinkClick'))
-            if hlinkClick is not None:
-                hlinkClick.set('action', 'ppaction://hlinkfile')
+        if not cell.text_frame.paragraphs[0].runs:
+            continue
+        run = cell.text_frame.paragraphs[0].runs[0]
+
+        report_path = os.path.join(SCRIPT_DIR, company_dir, "report.pptx")
+        slide_num, sld_id, slide_title = _get_price_comparison_slide_info(report_path)
+
+        if slide_num is None:
+            print(f"  Warning: No price comparison slide found in {report_path}")
+            continue
+
+        # PowerPoint OOXML 格式：
+        #   Relationship Target = "company/report.pptx#<sldId>,<slideNum>,<title>"
+        #   hlinkClick action   = "ppaction://hlinkpres?slideindex=<slideNum>&slidetitle=<title>"
+        fragment = f"{sld_id},{slide_num},{slide_title}"
+        run.hyperlink.address = f"{company_dir}/report.pptx#{fragment}"
+
+        hlinkClick = run._r.find('.//' + qn('a:hlinkClick'))
+        if hlinkClick is not None:
+            action = (f"ppaction://hlinkpres?slideindex={slide_num}"
+                      f"&slidetitle={slide_title}")
+            hlinkClick.set('action', action)
+
+        print(f"  {company_dir}: hyperlink -> slide {slide_num} (sldId={sld_id})")
 
     # 删除模板页
     for idx in [2, 1, 0]:
